@@ -1,18 +1,18 @@
-<?php 
+<?php
 require_once "connect.php";
 
 //1ST STEP: create a table Languages
 
 // sql create database
-$sql = "CREATE DATABASE fedotov_task";
-if ($link->query($sql) === TRUE) { //catch the errors 
+$sql = "CREATE DATABASE db_25_11_2020";
+if ($link->query($sql) === TRUE) { //catch the errors
   echo "Database created successfully";
 } else {
   echo "Error creating database: " . $link->error;
 }
 
 //select the created database
-mysqli_select_db($link, "fedotov_task");
+mysqli_select_db($link, "db_25_11_2020");
 mysqli_query($link, "SET NAMES utf8");
 
 // sql to create table
@@ -38,39 +38,52 @@ if ($link->query($sql) === TRUE) {
 $langLib = fopen("langLib.php", "w");
 
 //creating a string with all the code
-$langLibCode = "<?php 
+$langLibCode = "<?php
 /*Library which built different wiev of languages*/
 require_once \"connect.php\"; //openin connection
-mysqli_select_db($link, \"fedotov_task\"); //using our database
-$availableLangs = mysqli_query($link, \"SELECT DISTINCT Code FROM Languages\"); //getting the languages
+mysqli_select_db(\$link, \"db_25_11_2020\"); //using our database
+\$availableLangs = mysqli_query(\$link, \"SELECT DISTINCT Code FROM Languages\"); //getting the languages
 
 function interactiveListLong()
 {
-	while($ln = mysqli_fetch_assoc($availableLangs))
+	while(\$ln = mysqli_fetch_assoc(\$availableLangs))
 	{
-		echo '<a href=\"?ln='.$ln['Code'].'\"<li>'.$ln['Title'].'</li></a>';
+		echo '<a href=\"?ln='.\$ln['Code'].'\"<li>'.\$ln['Title'].'</li></a>';
 	}
 }
 
 function interactiveListShort()
 {
-	while($ln = mysqli_fetch_assoc($availableLangs))
+	while(\$ln = mysqli_fetch_assoc(\$availableLangs))
 	{
-		echo '<a href=\"?ln='.$ln['Code'].'\"<li>'.$ln['Code'].'</li></a>';
+		echo '<a href=\"?ln='.\$ln['Code'].'\"<li>'.\$ln['Code'].'</li></a>';
 	}
 }
 
 function dropDownList()
 {
 	echo '<select name=\"Languages\">';
-	while($ln = mysqli_fetch_assoc($availableLangs))
+	while(\$ln = mysqli_fetch_assoc(\$availableLangs))
 	{
-		echo '<option value=\"'.$ln['Code'].'\">';
+		echo '<option value=\"'.\$ln['Code'].'\">';
 	}
 	echo '</select>';
 }
 
 ";
 
+fwrite($langLib, $langLibCode);
+fclose($langLib);
+
+$sql = "INSERT INTO languages (`ID`, `Code`, `Title`, `ListOrder`) VALUES
+(NULL, 'en', 'english', NULL), (NULL, 'et', 'esti', NULL), (NULL, 'ru', 'русский', NULL)";
+
+if ($link->query($sql) === TRUE) {
+  echo '<br>';
+  echo "Insert was completed successfully";
+} else {
+  echo '<br>';
+  echo "Error insert table: " . $link->error;
+}
 
 ?>
